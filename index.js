@@ -15,6 +15,7 @@ const allowedOrigins = [
   // "https://collegeerp442.vercel.app"  // deployed frontend
 ];
 
+
 app.use(cors({
   origin: allowedOrigins,
   methods: ["GET", "POST", "PUT", "DELETE"],
