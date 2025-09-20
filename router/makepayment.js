@@ -1,6 +1,5 @@
 import express from "express";
-// import your userData model here
-// import userData from "../models/userData.js";
+
 import Razorpay from "razorpay";
 import path from "path";
 import fs from "fs";

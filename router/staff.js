@@ -1,0 +1,57 @@
+import express from "express";
+import sql from "../db.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const router = express.Router();
+
+
+// Staff portal login
+router.post("/portallogin", async (req, res) => {
+
+    const { email = "", password = "" } = req.body;
+    
+
+    try {
+        const response = await sql`
+      SELECT uid, email, password_hash
+      FROM staff
+      WHERE email = ${email}
+    `;
+
+        if (!response.length) {
+            return res.json({ alert: "email id is incorrect." });
+        }
+
+        const user = response[0];
+        const match = await bcrypt.compare(password, user.password_hash);
+
+        if (!match) {
+            return res.json({ alert: "password is incorrect. please try again." });
+        }
+
+        // issue JWT token
+        const token = jwt.sign(
+            { id: user.uid, username: email },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        res.cookie("jwt", token, {
+            httpOnly: true,
+            secure: true, // MUST be true for sameSite: "none"
+            maxAge: 1000 * 60 * 60,
+            sameSite: "none" // MUST be "none" for cross-site cookie
+        });
+
+
+        res.json({ status: "success", data: user, token: token });
+    } catch (err) {
+        res.status(500).json({ alert: err.message });
+    }
+});
+
+export default router;
