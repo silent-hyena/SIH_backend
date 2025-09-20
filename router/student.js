@@ -13,7 +13,7 @@ const router = express.Router()
 router.post("/portallogin", async (req, res) => {
 
     const { email = "", password = "" } = req.body;
-    console.log(email,password)
+
 
 
     try {
@@ -43,13 +43,16 @@ router.post("/portallogin", async (req, res) => {
 
         res.cookie("jwt", token, {
             httpOnly: true,
-            secure: true, // MUST be true for sameSite: "none"
+            // secure: true,
             maxAge: 1000 * 60 * 60,
-            sameSite: "none" // MUST be "none" for cross-site cookie
+            // sameSite: "none" // MUST be "none" for cross-site cookie
+
+            secure: process.env.NODE_ENV === "production", // false in local dev
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         });
 
 
-        res.json({ status: "success", data: user, token: token });
+        res.json({ status: "success" });
     } catch (err) {
         res.status(500).json({ alert: err.message });
     }
