@@ -48,7 +48,7 @@ router.post("/portallogin", async (req, res) => {
             // sameSite: "none" // MUST be "none" for cross-site cookie
 
             secure: process.env.NODE_ENV === "production", // false in local dev
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            sameSite: "none"
         });
 
 
