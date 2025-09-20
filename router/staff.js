@@ -42,11 +42,8 @@ router.post("/portallogin", async (req, res) => {
 
         res.cookie("jwt", token, {
             httpOnly: true,
-            // secure: true, // MUST be true for sameSite: "none"
+            secure: true,
             maxAge: 1000 * 60 * 60,
-            // sameSite: "none" // MUST be "none" for cross-site cookie
-
-            secure: process.env.NODE_ENV === "production", // false in local dev
             sameSite: "none"
         });
 
